@@ -1012,10 +1012,6 @@ dialog::backdrop{background:rgba(10,14,12,.6)}
     </div>
   </div></section>
 
-  <section class="blk"><div class="wrap">
-    <div class="shead"><div><div class="eyebrow" data-i="sold_e">Recently sold</div><h2 data-i="sold_t">What land nearby went for</h2></div></div>
-    <div class="soldrow" id="soldrow"></div>
-  </div></section>
 </main>
 
 <!-- LAND -->
@@ -1258,7 +1254,6 @@ function i18n(){
   $("heroH").innerHTML=t("hero_h");$("langBtn").textContent=lang==="en"?"ES":"EN";
   $("alState").innerHTML=`<option value="">${t("state")}: ${t("any")}</option>`+[...new Set(DATA.map(d=>d.stateName))].map(s=>`<option>${s}</option>`).join("");
   $("alBudget").innerHTML=`<option value="">${t("budget")}: ${t("any")}</option>`+[10000,20000,50000,100000].map(p=>`<option>${t("upto")} ${money(p)}</option>`).join("");
-  $("soldrow").innerHTML=SOLD.map(s=>`<div class="soldc"><div class="s">${t("sold")}</div><div class="p num">${money(s.price)}</div><div><b>${esc(s.size)}</b> · ${esc(s.city)}</div><div class="m">${esc(s.county)} County, ${s.state}</div></div>`).join("");
   $("cParcel").innerHTML=`<option value="">${t("general")}</option>`+DATA.slice().sort(SORTS.feat).map(d=>`<option value="${esc(d.id)}">${esc(title(d))} · ${money(d.price)}</option>`).join("");
 }
 function go(p){page=p;$$(".page").forEach(m=>m.classList.toggle("on",m.dataset.page===p));$$("[data-nav]").forEach(a=>a.classList.toggle("cur",a.dataset.nav===p));

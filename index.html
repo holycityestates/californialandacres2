@@ -1263,6 +1263,7 @@ function fitToFilter(){if(F.county&&CGEO){drawBorders();return}const L2=DATA.fil
 function route(){const h=(location.hash||"").replace("#","");go(["home","land","map","contact"].includes(h)?h:"home")}
 function applyFilter(){fillSearch();render();if(page==="map"){fitToFilter();drawBorders()}}
 document.addEventListener("click",e=>{
+  const nv=e.target.closest("[data-nav]");if(nv&&nv.dataset.nav!==page&&(Object.values(F).some(Boolean)||pick||favOnly)){Object.keys(F).forEach(k=>F[k]="");pick="";favOnly=false;applyFilter()}
   const f=e.target.closest("[data-fav]");if(f){e.stopPropagation();const id=f.dataset.fav;favs.has(id)?favs.delete(id):favs.add(id);try{localStorage.setItem("cla_favs",JSON.stringify([...favs]))}catch{}$$(`[data-fav="${CSS.escape(id)}"]`).forEach(b=>b.setAttribute("aria-pressed",favs.has(id)));if(favOnly)render();return}
   const cp=e.target.closest("[data-cp]");if(cp){e.stopPropagation();const ph=cp.closest(".ph"),d=DATA.find(x=>x.id===ph.dataset.open),G=gal(d),im0=ph.querySelector("img");let i=(+ph.dataset.i||0)+ +cp.dataset.cp;i=(i+G.length)%G.length;ph.dataset.i=i;im0.src=G[i].g;return}
   const ask=e.target.closest("[data-ask]");if(ask){$("dlg").close();$("cParcel").value=ask.dataset.ask;return}

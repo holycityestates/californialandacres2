@@ -1109,7 +1109,7 @@ let lang="en",page="home",favOnly=false,pick="",map=null,markers=[],mapSel=null;
 const F={state:"",county:"",max:"",size:""};
 let favs=new Set(),cmp=[];
 try{favs=new Set(JSON.parse(localStorage.getItem("cla_favs")||"[]"))}catch{}
-const L=(d,k)=>(lang==="es"&&d[k+"_es"])||d[k];const t=k=>(T[lang]&&T[lang][k])||T.en[k]||k;
+const LX=(d,k)=>(lang==="es"&&d[k+"_es"])||d[k];const t=k=>(T[lang]&&T[lang][k])||T.en[k]||k;
 const $=id=>document.getElementById(id);
 const $$=s=>document.querySelectorAll(s);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -1154,7 +1154,7 @@ function card(d){
    <div class="info">
     <div class="t">${esc(title(d))}</div>
     <div class="loc">${esc(d.county)} County, ${esc(d.stateName)}</div>
-    ${d.hl?`<div class="hl">${esc(L(d,"hl"))}</div>`:""}
+    ${d.hl?`<div class="hl">${esc(LX(d,"hl"))}</div>`:""}
     <div class="apn">APN ${esc(d.apn)}</div>
     <div class="row2"><button class="more" data-open="${esc(d.id)}">${t("details")}</button><label class="cmp"><input type="checkbox" data-cmp="${esc(d.id)}" ${cmp.includes(d.id)?"checked":""}> ${t("compare")}</label></div>
    </div></article>`;
@@ -1230,9 +1230,9 @@ function openDetail(id){
   const G=gal(d);$("dlgBody").innerHTML=`<div class="dph">${G.length>1?`<div class="gal" id="gal">${G.map((g,i)=>`<img src="${g.g}" alt="${esc(title(d))} photo ${i+1}" ${i?'loading="lazy"':""}>`).join("")}</div><button class="gnav p" id="gp" aria-label="Previous photo">‹</button><button class="gnav n" id="gn" aria-label="Next photo">›</button><div class="gcount" id="gc">1 / ${G.length}</div>`:src?`<img src="${src}" alt="${esc(title(d))}">`:""}<button class="x" id="dlgX" aria-label="Close">×</button></div>${G.length>1?`<div class="gstrip" id="gs">${G.map((g,i)=>`<button data-gi="${i}" aria-label="Photo ${i+1}" aria-current="${!i}"><img src="${g.t}" alt="" loading="lazy"></button>`).join("")}</div>`:""}
    <div class="pad"><div class="eyebrow">${esc(d.county)} County · ${esc(d.stateName)}</div><h3>${esc(title(d))}</h3>
    <div><div class="pr num">${money(d.price)}</div><div class="fin">${t("fin")}</div></div>
-   ${d.hl?`<div class="hl">${esc(L(d,"hl"))}</div>`:""}
+   ${d.hl?`<div class="hl">${esc(LX(d,"hl"))}</div>`:""}
    <div class="kv">${kv("APN",`<span style="font-family:var(--mono);user-select:all">${esc(d.apn)}</span>`)}${kv(t("size"),esc(d.size))}${kv(t("town"),esc(d.city))}${kv(t("county"),esc(d.county))}${kv(t("state"),esc(d.stateName))}${kv(t("loc"),esc(d.about))}${kv(t("feat"),esc(d.tags.join(", ")))}</div>
-   ${d.desc?`<details class="about" open><summary>${t("readDesc")}</summary><div class="abody">${d.head?`<h4>${esc(L(d,"head"))}</h4>`:""}${L(d,"desc").split(/\n+/).map(p=>`<p>${esc(p)}</p>`).join("")}${lang==="es"&&!d.desc_es?`<p class="note">${t("enOnly")}</p>`:""}</div></details>`:""}
+   ${d.desc?`<details class="about" open><summary>${t("readDesc")}</summary><div class="abody">${d.head?`<h4>${esc(LX(d,"head"))}</h4>`:""}${LX(d,"desc").split(/\n+/).map(p=>`<p>${esc(p)}</p>`).join("")}${lang==="es"&&!d.desc_es?`<p class="note">${t("enOnly")}</p>`:""}</div></details>`:""}
    <div class="btns">${d.photos&&G.length<2?`<a class="btn o" href="${esc(d.photos)}" target="_blank" rel="noopener">${t("photos")}</a>`:""}${d.map?`<a class="btn o" href="${esc(d.map)}" target="_blank" rel="noopener">${t("maps")}</a>`:""}<a class="btn o" href="${esc(dslug(d))}/">${lang==="es"?"Página completa":"Full page"}</a><button class="btn o" type="button" data-share="${esc(dslug(d))}">${lang==="es"?"Compartir":"Share"}</button></div>
    <div class="callbox"><div class="eyebrow">${t("call")}</div><div class="n num">(213) 274-2507</div><div style="color:var(--muted);font-size:14px">${t("mention")} ${esc(d.apn)}</div><div class="btns"><a class="btn" href="tel:+12132742507">${t("c_call")}</a><a class="btn o" href="sms:+12132742507">${t("c_text")}</a><a class="btn o" href="#contact" data-ask="${esc(d.id)}">${t("c_msg2")}</a></div></div></div>`;
   $("dlg").showModal();$("dlgX").onclick=()=>$("dlg").close();
@@ -1246,7 +1246,7 @@ function openDetail(id){
 }
 function openCompare(){
   const L2=cmp.map(id=>DATA.find(x=>x.id===id));const row=(k,f)=>`<tr><th>${k}</th>${L2.map(d=>`<td>${f(d)}</td>`).join("")}</tr>`;
-  $("dlgBody").innerHTML=`<div class="pad" style="padding-top:22px"><div style="display:flex;align-items:center"><h3 style="flex:1">${t("cmp_h")}</h3><button class="x" style="position:static" id="dlgX" aria-label="Close">×</button></div><div class="tablewrap"><table class="cmpt">${row("",d=>im(d,"thumb")?`<img src="${im(d,"thumb")}" alt="">`:"")}${row("",d=>`<b>${esc(title(d))}</b>`)}${row(t("price"),d=>money(d.price))}${row(t("county"),d=>esc(d.county))}${row("APN",d=>`<span style="font-family:var(--mono);font-size:12px">${esc(d.apn)}</span>`)}${row(t("good"),d=>esc(L(d,"hl")||"—"))}${row(t("feat"),d=>esc(d.tags.join(", ")||"—"))}</table></div></div>`;
+  $("dlgBody").innerHTML=`<div class="pad" style="padding-top:22px"><div style="display:flex;align-items:center"><h3 style="flex:1">${t("cmp_h")}</h3><button class="x" style="position:static" id="dlgX" aria-label="Close">×</button></div><div class="tablewrap"><table class="cmpt">${row("",d=>im(d,"thumb")?`<img src="${im(d,"thumb")}" alt="">`:"")}${row("",d=>`<b>${esc(title(d))}</b>`)}${row(t("price"),d=>money(d.price))}${row(t("county"),d=>esc(d.county))}${row("APN",d=>`<span style="font-family:var(--mono);font-size:12px">${esc(d.apn)}</span>`)}${row(t("good"),d=>esc(LX(d,"hl")||"—"))}${row(t("feat"),d=>esc(d.tags.join(", ")||"—"))}</table></div></div>`;
   $("dlg").showModal();$("dlgX").onclick=()=>$("dlg").close();
 }
 function toast(m){const e=$("toast");e.textContent=m;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2800)}

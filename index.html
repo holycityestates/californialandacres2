@@ -846,10 +846,10 @@ section.blk{padding-block:64px 8px}
 .alerts .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:28px;align-items:center;padding-block:46px}
 .alerts h2{font-size:clamp(28px,3vw,40px)}
 .alerts p{margin:6px 0 0;opacity:.8}
-.alerts form{display:grid;grid-template-columns:1.4fr 1fr 1fr auto;gap:8px}
+.alerts form{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .alerts input,.alerts select{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:#fff;border-radius:999px;padding:12px 16px;min-width:0}
 .alerts option{color:#111}
-.alerts button{border:0;border-radius:999px;background:var(--copper);color:#fff;font-weight:800;padding:12px 22px}
+.alerts button{grid-column:1/-1;border:0;border-radius:999px;background:var(--copper);color:#fff;font-weight:800;padding:12px 22px}
 footer{background:var(--night);color:rgba(255,255,255,.75);font-size:14px;border-top:1px solid rgba(255,255,255,.08)}
 footer .wrap{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between;padding-block:26px calc(30px + env(safe-area-inset-bottom,0px))}
 footer b{color:#fff}
@@ -1076,7 +1076,7 @@ dialog::backdrop{background:rgba(10,14,12,.6)}
 
 <section class="alerts" id="alerts"><div class="wrap">
   <div><h2 data-i="al_t">Be first to new land</h2><p data-i="al_p">Tell us where and your budget. We email you when a matching parcel is listed.</p></div>
-  <form id="alertForm"><input id="alEmail" type="email" required placeholder="Email" aria-label="Email"><select id="alState" aria-label="State"></select><select id="alBudget" aria-label="Budget"></select><button type="submit" data-i="al_b">Sign me up</button></form>
+  <form id="alertForm"><input id="alEmail" type="email" required placeholder="Email" aria-label="Email"><input id="alPhone" type="tel" autocomplete="tel" placeholder="Phone (optional)" data-ph="Phone (optional)" data-ph-es="Teléfono (opcional)" aria-label="Phone"><select id="alState" aria-label="State"></select><select id="alBudget" aria-label="Budget"></select><button type="submit" data-i="al_b">Sign me up</button></form>
 </div></section>
 <footer><div class="wrap"><div><b>California Land Acres</b><br><span data-i="fin">Seller financing available. Reach out for more details.</span></div><div><a href="#home" data-i="nav_home">Home</a> · <a href="#land" data-i="nav_land">Land for sale</a> · <a href="#map" data-i="nav_map">Map</a> · <a href="#contact" data-i="nav_contact">Contact us</a></div><div><span data-i="call">Call or text</span> <b class="num" style="user-select:all">(213) 274-2507</b><br>© 2026 California Land Acres</div></div></footer>
 
@@ -1241,6 +1241,7 @@ function openCompare(){
 }
 function toast(m){const e=$("toast");e.textContent=m;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2800)}
 function i18n(){
+  $$("[data-ph]").forEach(e=>e.placeholder=lang==="es"?e.dataset.phEs:e.dataset.ph);
   $$("[data-i]").forEach(e=>{const k=e.dataset.i;if(e._en===undefined)e._en=e.textContent;e.textContent=lang==="es"&&T.es[k]?T.es[k]:e._en});
   $$("[data-i_html]").forEach(e=>e.innerHTML=t(e.dataset.i_html));
   $("heroH").innerHTML=t("hero_h");$("langBtn").textContent=lang==="en"?"ES":"EN";
@@ -1282,7 +1283,7 @@ $("cmpClear").onclick=()=>{cmp=[];$$("[data-cmp]").forEach(x=>x.checked=false);t
 $("dlg").addEventListener("click",e=>{if(e.target===$("dlg"))$("dlg").close()});
 $("dlg").addEventListener("close",()=>{const was=curDetail,p=pushed;curDetail=null;pushed=false;if(was&&/^#land\//.test(location.hash)){if(p)history.back();else history.replaceState(null,"",prevHash||"#land")}});
 $("langBtn").onclick=()=>{lang=lang==="en"?"es":"en";document.documentElement.lang=lang;i18n();fillSearch();renderCounties();render()};
-const LEADS_URL="";
+const LEADS_URL="https://script.google.com/macros/s/AKfycbyNN30IY-DVzABNrgjYNGc1AFPgHRC_bXzr_WgQkCkLobO5Il6AlPmIAiStfxMOQ2b4/exec";
 async function sendLead(kind,data,form){
   const sent=lang==="es"?"Gracias. Le responderemos pronto.":"Thank you. We will be in touch soon.";
   if(!LEADS_URL||LEADS_URL.startsWith("__")){toast("Demo only. Not connected to the Google Sheet yet.");form.reset();return}
@@ -1291,7 +1292,7 @@ async function sendLead(kind,data,form){
   catch{toast(lang==="es"?"No se pudo enviar. Llame o escriba al (213) 274-2507.":"Could not send. Please call or text (213) 274-2507.")}
   finally{b.disabled=false}
 }
-$("alertForm").addEventListener("submit",e=>{e.preventDefault();sendLead("alert",{email:$("alEmail").value,state:$("alState").value,budget:$("alBudget").value},e.target)});
+$("alertForm").addEventListener("submit",e=>{e.preventDefault();sendLead("alert",{email:$("alEmail").value,phone:$("alPhone").value,state:$("alState").value,budget:$("alBudget").value},e.target)});
 $("cform").addEventListener("submit",e=>{e.preventDefault();const p=$("cParcel"),o=p.selectedOptions[0];sendLead("contact",{name:$("cName").value,phone:$("cPhone").value,email:$("cEmail").value,parcel:p.value?`${o.textContent} (APN ${(DATA.find(d=>d.id===p.value)||{}).apn||""})`:"",message:$("cMsg").value,ok:$("cOk").checked,website:$("cWeb").value},e.target)});
 window.addEventListener("hashchange",route);
 i18n();fillSearch();renderCounties();render();route();

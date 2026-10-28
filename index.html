@@ -894,6 +894,14 @@ dialog::backdrop{background:rgba(10,14,12,.6)}
 .cmpt th,.cmpt td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:top;min-width:150px}
 .cmpt th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em;min-width:110px}
 .cmpt img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;display:block}
+.done{position:fixed;inset:0;z-index:300;background:rgba(20,30,25,.55);display:flex;align-items:center;justify-content:center;padding:20px}
+.done[hidden]{display:none}
+.done .box{background:#fff;color:var(--ink,#1c2a22);border-radius:16px;padding:26px 24px 22px;text-align:center;max-width:340px;width:100%}
+.done .ck{width:56px;height:56px;border-radius:50%;background:#2f6b4f;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:10px}
+.done h3{margin:0 0 6px;font-size:22px}
+.done p{margin:0 0 16px;line-height:1.5}
+.done a{color:inherit;font-weight:800;white-space:nowrap}
+.done button{border:0;border-radius:999px;background:var(--copper);color:#fff;font-weight:800;padding:12px 34px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom,0px));background:var(--night);color:#fff;padding:11px 18px;border-radius:999px;font-size:14px;z-index:70}
 .page:not(.on){display:none!important}
 
@@ -1091,6 +1099,7 @@ dialog::backdrop{background:rgba(10,14,12,.6)}
 <div class="tray" id="tray" hidden><div class="wrap"><b data-i="cmp_t">Compare</b><span id="trayItems" style="display:flex;gap:6px;flex-wrap:wrap"></span><span style="flex:1"></span><button class="clr" id="cmpClear" data-i="cmp_clear">Clear</button><button class="go" id="cmpGo" data-i="cmp_go">Compare now</button></div></div>
 <dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
 <div class="toast" id="toast" hidden></div>
+<div class="done" id="done" hidden role="dialog" aria-modal="true" aria-labelledby="doneT"><div class="box"><div class="ck" aria-hidden="true">&#10003;</div><h3 id="doneT"></h3><p id="doneP"></p><button type="button" id="doneOk"></button></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
@@ -1284,11 +1293,23 @@ $("dlg").addEventListener("click",e=>{if(e.target===$("dlg"))$("dlg").close()});
 $("dlg").addEventListener("close",()=>{const was=curDetail,p=pushed;curDetail=null;pushed=false;if(was&&/^#land\//.test(location.hash)){if(p)history.back();else history.replaceState(null,"",prevHash||"#land")}});
 $("langBtn").onclick=()=>{lang=lang==="en"?"es":"en";document.documentElement.lang=lang;i18n();fillSearch();renderCounties();render()};
 const LEADS_URL="https://script.google.com/macros/s/AKfycbyNN30IY-DVzABNrgjYNGc1AFPgHRC_bXzr_WgQkCkLobO5Il6AlPmIAiStfxMOQ2b4/exec";
+function showDone(kind){
+  const es=lang==="es",al=kind==="alert";
+  $("doneT").textContent=es?(al?"Está en la lista":"Mensaje enviado"):(al?"You're on the list":"Message sent");
+  $("doneP").innerHTML=(es?(al?"Gracias. Le avisaremos cuando haya terrenos que coincidan.":"Gracias. Lo recibimos y normalmente respondemos el mismo día.")
+    :(al?"Thank you. We got it and will email you when matching land is listed.":"Thank you. We got it and usually reply the same day."))
+    +"<br><br>"+(es?"¿Lo necesita más rápido? Llame o escriba al ":"Need it faster? Call or text ")+'<a href="tel:+12132742507">(213) 274-2507</a>.';
+  $("doneOk").textContent=es?"Entendido":"Got it";
+  $("done").hidden=false;$("doneOk").focus();
+}
+$("doneOk").addEventListener("click",()=>$("done").hidden=true);
+$("done").addEventListener("click",e=>{if(e.target.id==="done")$("done").hidden=true});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")$("done").hidden=true});
 async function sendLead(kind,data,form){
-  const sent=lang==="es"?"Gracias. Le responderemos pronto.":"Thank you. We will be in touch soon.";
+  const sent="";
   if(!LEADS_URL||LEADS_URL.startsWith("__")){toast("Demo only. Not connected to the Google Sheet yet.");form.reset();return}
   const b=form.querySelector("button[type=submit]");b.disabled=true;
-  try{await fetch(LEADS_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({kind,lang,page:location.href,...data})});toast(sent);form.reset()}
+  try{await fetch(LEADS_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({kind,lang,page:location.href,...data})});showDone(kind);form.reset()}
   catch{toast(lang==="es"?"No se pudo enviar. Llame o escriba al (213) 274-2507.":"Could not send. Please call or text (213) 274-2507.")}
   finally{b.disabled=false}
 }

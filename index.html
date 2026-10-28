@@ -765,7 +765,8 @@ section.blk{padding-block:64px 8px}
 /* page header (style 5) */
 .pagehead{position:relative;color:#fff;overflow:hidden;min-height:340px;display:grid;align-items:end}
 .pagehead .bg{position:absolute;inset:0;background-size:cover;background-position:center 55%;background-image:var(--bg)}
-@media (max-width:760px){.hero .bg,.pagehead .bg{background-image:var(--bgs)}}
+@media (min-width:1100px) and (min-resolution:1.5dppx){.hero .bg,.pagehead .bg{background-image:var(--bgx)}}
+@media (max-width:760px){.hero .bg,.pagehead .bg{background-image:var(--bgs)}.hero .bg{background-image:var(--bgp)}}
 .pagehead .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(16,22,18,.25),rgba(16,22,18,.72))}
 .pagehead .in{position:relative;padding-block:70px 40px;display:grid;gap:10px}
 .pagehead .eyebrow{color:var(--gold)}
@@ -970,7 +971,7 @@ dialog::backdrop{background:rgba(10,14,12,.6)}
 
 <!-- HOME -->
 <main class="page" data-page="home">
-  <section class="hero"><div class="bg" style="--bg:url('img/hero_desert_wide.jpg');--bgs:url('img/hero_desert_s.jpg')"></div><div class="shade"></div>
+  <section class="hero"><div class="bg" style="--bg:url('img/hero_desert_wide.jpg');--bgs:url('img/hero_desert_s.jpg');--bgp:url('img/hero_desert_p.jpg');--bgx:url('img/hero_desert_xl.jpg')"></div><div class="shade"></div>
     <div class="wrap in">
       <div class="eyebrow" data-i="hero_e">California · Nevada · Arizona</div>
       <h1 id="heroH">Room to <em>breathe</em>, land to call yours.</h1>
@@ -1011,7 +1012,7 @@ dialog::backdrop{background:rgba(10,14,12,.6)}
 
 <!-- LAND -->
 <main class="page" data-page="land">
-  <section class="pagehead"><div class="bg" style="--bg:url('img/hero_lake_wide.jpg');--bgs:url('img/hero_lake_s.jpg')"></div><div class="shade"></div>
+  <section class="pagehead"><div class="bg" style="--bg:url('img/hero_lake_wide.jpg');--bgs:url('img/hero_lake_s.jpg');--bgx:url('img/hero_lake_xl.jpg')"></div><div class="shade"></div>
     <div class="wrap in"><div class="eyebrow" data-i="list_e">For sale now</div><h1 data-i_html="lp_t">Land <em>for sale</em></h1><p><span class="factN num"></span> <span data-i="lp_p">parcels across California, Nevada, Arizona and more. Seller financing available.</span></p></div></section>
   <section style="padding-bottom:20px"><div class="wrap">
     <div class="fbar">
@@ -1053,7 +1054,7 @@ dialog::backdrop{background:rgba(10,14,12,.6)}
 
 <!-- CONTACT -->
 <main class="page" data-page="contact">
-  <section class="pagehead"><div class="bg" style="--bg:url('img/hero_road_wide.jpg');--bgs:url('img/hero_road_s.jpg')"></div><div class="shade"></div>
+  <section class="pagehead"><div class="bg" style="--bg:url('img/hero_road_wide.jpg');--bgs:url('img/hero_road_s.jpg');--bgx:url('img/hero_road_xl.jpg')"></div><div class="shade"></div>
     <div class="wrap in"><div class="eyebrow" data-i="nav_contact">Contact us</div><h1 data-i="c_t">Questions about a parcel? Ask us.</h1><p data-i="c_p">Call, text or send a message. We usually answer the same day.</p></div></section>
   <section style="padding-bottom:30px"><div class="wrap contact">
     <form class="cform" id="cform">

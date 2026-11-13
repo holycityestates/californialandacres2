@@ -132,8 +132,8 @@ footer .wrap{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between;
 (function(){
 var b=document.body,$=function(i){return document.getElementById(i)};
 function setLang(l){b.classList.toggle("es",l==="es");document.documentElement.lang=l;Array.prototype.forEach.call(document.querySelectorAll("#lang button"),function(x){x.setAttribute("aria-pressed",x.getAttribute("data-l")===l)});try{localStorage.setItem("cla_lang",l)}catch(e){}}
-var saved="";try{saved=localStorage.getItem("cla_lang")||""}catch(e){}
-if(saved==="es")setLang("es");
+var saved="";try{saved=localStorage.getItem("cla_lang")||""}catch(e){}try{var q=new URLSearchParams(location.search).get("lang");if(q==="es"||q==="en")saved=q}catch(e){}
+if(saved==="es")setLang("es");else if(saved==="en")setLang("en");
 Array.prototype.forEach.call(document.querySelectorAll("#lang button"),function(x){x.onclick=function(){setLang(x.getAttribute("data-l"))}});
 function toast(m){var t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true},2400)}
 $("back").onclick=function(e){try{if(document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1){e.preventDefault();history.back()}}catch(x){}};

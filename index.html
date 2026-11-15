@@ -1239,7 +1239,7 @@ function openDetail(id){
    ${d.map?`<a class="mapbar" href="${esc(d.map)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg><span>${t("maps")}<small>${t("mapsub")}</small></span><span class="go"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></span></a>`:""}
    <div class="kv">${kv("APN",`<span style="font-family:var(--mono);user-select:all">${esc(d.apn)}</span>`)}${kv(t("size"),esc(d.size))}${kv(t("town"),esc(d.city))}${kv(t("county"),esc(d.county))}${kv(t("state"),esc(d.stateName))}${kv(t("loc"),esc(d.about))}${kv(t("feat"),esc(d.tags.join(", ")))}</div>
    ${d.desc?`<details class="about" open><summary>${t("readDesc")}</summary><div class="abody">${d.head?`<h4>${esc(LX(d,"head"))}</h4>`:""}<div class="cdesc">${LX(d,"desc").split(/\n+/).map(p=>`<p>${esc(p)}</p>`).join("")}</div><button type="button" class="rmb" hidden></button>${lang==="es"&&!d.desc_es?`<p class="note">${t("enOnly")}</p>`:""}</div></details>`:""}
-   <div class="btns">${d.photos&&G.length<2?`<a class="btn o" href="${esc(d.photos)}" target="_blank" rel="noopener">${t("photos")}</a>`:""}<a class="btn o" href="${esc(dslug(d))}/">${lang==="es"?"Página completa":"Full page"}</a><button class="btn o" type="button" data-share="${esc(dslug(d))}">${lang==="es"?"Compartir":"Share"}</button></div>
+   <div class="btns">${d.photos&&G.length<2?`<a class="btn o" href="${esc(d.photos)}" target="_blank" rel="noopener">${t("photos")}</a>`:""}<a class="btn o" href="${esc(dslug(d))}/${lang==="es"?"?lang=es":""}">${lang==="es"?"Página completa":"Full page"}</a><button class="btn o" type="button" data-share="${esc(dslug(d))}">${lang==="es"?"Compartir":"Share"}</button></div>
    <div class="callbox"><div class="eyebrow">${t("call")}</div><div class="n num">(845) 521-6666</div><div style="color:var(--muted);font-size:14px">${t("mention")} ${esc(d.apn)}</div><div class="btns"><a class="btn" href="tel:+18455216666">${t("c_call")}</a><a class="btn o" href="${esc(smsHref(d))}">${t("c_text")}</a><a class="btn o" href="#contact" data-ask="${esc(d.id)}">${t("c_msg2")}</a></div></div></div>`;
   $("dlg").showModal();clampAll();$("dlgX").onclick=()=>$("dlg").close();
   {const want="#land/"+dslug(d);if(location.hash!==want){if(!curDetail){prevHash=location.hash||"#home";history.pushState(null,"",want);pushed=true}else history.replaceState(null,"",want)}curDetail=d.id}
@@ -1275,7 +1275,7 @@ document.addEventListener("click",e=>{
   const nv=e.target.closest("[data-nav]");if(nv&&nv.dataset.nav!==page&&(Object.values(F).some(Boolean)||pick||favOnly)){Object.keys(F).forEach(k=>F[k]="");pick="";favOnly=false;applyFilter()}
   const f=e.target.closest("[data-fav]");if(f){e.stopPropagation();const id=f.dataset.fav;favs.has(id)?favs.delete(id):favs.add(id);try{localStorage.setItem("cla_favs",JSON.stringify([...favs]))}catch{}$$(`[data-fav="${CSS.escape(id)}"]`).forEach(b=>b.setAttribute("aria-pressed",favs.has(id)));if(favOnly)render();return}
   const cp=e.target.closest("[data-cp]");if(cp){e.stopPropagation();const ph=cp.closest(".ph"),d=DATA.find(x=>x.id===ph.dataset.open),G=gal(d),im0=ph.querySelector("img");let i=(+ph.dataset.i||0)+ +cp.dataset.cp;i=(i+G.length)%G.length;ph.dataset.i=i;im0.removeAttribute("srcset");im0.src=G[i].m;return}
-  const sh=e.target.closest("[data-share]");if(sh){const u=(/(^|\.)land4saleusa\.com$/.test(location.hostname)?"https://www.land4saleusa.com/":location.origin+location.pathname.replace(/[^\/]*$/,""))+sh.dataset.share+"/";if(navigator.share){navigator.share({title:document.title,url:u}).catch(()=>{})}else{navigator.clipboard.writeText(u).then(()=>toast(lang==="es"?"Enlace copiado":"Link copied"),()=>toast(u))}return}
+  const sh=e.target.closest("[data-share]");if(sh){const u=(/(^|\.)land4saleusa\.com$/.test(location.hostname)?"https://www.land4saleusa.com/":location.origin+location.pathname.replace(/[^\/]*$/,""))+sh.dataset.share+"/"+(lang==="es"?"?lang=es":"");if(navigator.share){navigator.share({title:document.title,url:u}).catch(()=>{})}else{navigator.clipboard.writeText(u).then(()=>toast(lang==="es"?"Enlace copiado":"Link copied"),()=>toast(u))}return}
   const ask=e.target.closest("[data-ask]");if(ask){$("dlg").close();$("cParcel").value=ask.dataset.ask;return}
   const o=e.target.closest("[data-open]");if(o){openDetail(o.dataset.open);return}
   const mi=e.target.closest(".mitem");if(mi){const d=DATA.find(x=>x.id===mi.dataset.mid);map.flyTo([d.plat,d.plon],Math.max(map.getZoom(),11));map.flyTo([d.plat,d.plon],13);setTimeout(()=>{const m=markers.find(m=>m._d&&m._d.id===d.id);if(m)openPop(d,m)},1100);return}
@@ -1298,7 +1298,8 @@ $("sort").onchange=renderLand;$("favOnly").onclick=()=>{favOnly=!favOnly;render(
 $("cmpClear").onclick=()=>{cmp=[];$$("[data-cmp]").forEach(x=>x.checked=false);tray()};$("cmpGo").onclick=openCompare;
 $("dlg").addEventListener("click",e=>{if(e.target===$("dlg"))$("dlg").close()});
 $("dlg").addEventListener("close",()=>{const was=curDetail,p=pushed;curDetail=null;pushed=false;if(was&&/^#land\//.test(location.hash)){if(p)history.back();else history.replaceState(null,"",prevHash||"#land")}});
-$$("#langBtn button").forEach(x=>x.onclick=()=>{if(lang===x.dataset.l)return;lang=x.dataset.l;try{localStorage.setItem("cla_lang",lang)}catch(e){}document.documentElement.lang=lang;i18n();fillSearch();renderCounties();render()});
+function syncLangUrl(){try{const u=new URL(location.href);if(lang==="es")u.searchParams.set("lang","es");else u.searchParams.delete("lang");history.replaceState(null,"",u.pathname+u.search+u.hash)}catch(e){}}
+$$("#langBtn button").forEach(x=>x.onclick=()=>{if(lang===x.dataset.l)return;lang=x.dataset.l;try{localStorage.setItem("cla_lang",lang)}catch(e){}document.documentElement.lang=lang;syncLangUrl();i18n();fillSearch();renderCounties();render()});
 const LEADS_URL="https://script.google.com/macros/s/AKfycbyNN30IY-DVzABNrgjYNGc1AFPgHRC_bXzr_WgQkCkLobO5Il6AlPmIAiStfxMOQ2b4/exec";
 function showDone(kind){
   const es=lang==="es",al=kind==="alert";
@@ -1322,7 +1323,7 @@ async function sendLead(kind,data,form){
 }
 $("alertForm").addEventListener("submit",e=>{e.preventDefault();sendLead("alert",{email:$("alEmail").value,phone:$("alPhone").value,state:$("alState").value,budget:$("alBudget").value},e.target)});
 $("cform").addEventListener("submit",e=>{e.preventDefault();const p=$("cParcel"),o=p.selectedOptions[0];sendLead("contact",{name:$("cName").value,phone:$("cPhone").value,email:$("cEmail").value,parcel:p.value?`${o.textContent} (APN ${(DATA.find(d=>d.id===p.value)||{}).apn||""})`:"",message:$("cMsg").value,ok:$("cOk").checked,website:$("cWeb").value},e.target)});
-window.addEventListener("hashchange",route);
-document.documentElement.lang=lang;i18n();fillSearch();renderCounties();render();route();
+window.addEventListener("hashchange",route);window.addEventListener("popstate",syncLangUrl);
+document.documentElement.lang=lang;syncLangUrl();i18n();fillSearch();renderCounties();render();route();
 </script>
 </body></html>
